@@ -1,0 +1,54 @@
+import numpy as np 
+import pandas as pd 
+import matplotlib.pyplot as plt
+import cv2
+import tensorflow as tf
+from PIL import Image
+import os
+from sklearn.model_selection import train_test_split
+from keras.utils import to_categorical
+from keras.models import Sequential, load_model
+from keras.layers import Conv2D, MaxPool2D, Dense, Flatten, Dropout
+
+# Mount Google Drive
+from google.colab import drive
+drive.mount('/content/drive')
+
+# Specify the path to your "train2" folder in Google Drive
+data_dir = '/content/drive/MyDrive/Train 2'
+
+data = []
+labels = []
+classes = 11
+
+# Retrieving the images and their labels 
+for i in range(classes):
+    path = os.path.join(data_dir, str(i))
+    images = os.listdir(path)
+
+    for a in images:
+        try:
+            image = Image.open(os.path.join(path, a))
+            image = image.resize((30, 30))
+            image = np.array(image)
+            data.append(image)
+            labels.append(i)
+        except:
+            print("Error loading image")
+
+# Converting lists into numpy arrays
+data = np.array(data)
+labels = np.array(labels)
+
+print(data.shape, labels.shape)
+# Splitting training and testing dataset
+X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, random_state=42)
+
+print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+
+# Converting the labels into one-hot encoding
+y_train = to_categorical(y_train, 43)
+y_test = to_categorical(y_test, 43)
+
+# Building the model
+# ... (rest of your code)
